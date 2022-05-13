@@ -17,7 +17,6 @@ namespace WebAPI.Controllers
     {
         private IHostingEnvironment Environment;
 
-
         public NameController(IHostingEnvironment _environment)
         {
             Environment = _environment;
@@ -29,6 +28,7 @@ namespace WebAPI.Controllers
         [HttpPost, DisableRequestSizeLimit]
         public ActionResult Upload(IFormFile audio, [FromForm] string email, [FromForm] string lanID, [FromForm] string employeeID)
         {
+            //web app will record the mp3 and will send the mp3 to this api
             if (ModelState.IsValid)
             {
                 if (audio != null && audio.Length > 0)
@@ -61,20 +61,20 @@ namespace WebAPI.Controllers
                 using (var fs = new FileStream(fullpath, FileMode.Create, FileAccess.Write))
                 {
                     SpeechSynthesizer speech = new SpeechSynthesizer();
-                    speech.Speak("Welcome to ASPSnippets.");
-                    int length = Convert.ToInt32(fs.Length);
-                    data = new byte[length];
+                    speech.Speak(text);
+                   // int length = Convert.ToInt32(fs.Length);
+                   // data = new byte[length];
                 //    fs.Read(data, 0, length);
-                    speech.SetOutputToWaveStream(fs);
+                  //  speech.SetOutputToWaveStream(fs);
                 };
+            return Ok("successful");
+
+            //return File(data, "audio/vnd.wav");
+        }
 
 
-                return File(data, "audio/vnd.wav");
-            }
-         
 
-
-    [HttpGet, DisableRequestSizeLimit]
+        [HttpGet, DisableRequestSizeLimit]
     public async Task<IActionResult> Download()
     {
         //await
