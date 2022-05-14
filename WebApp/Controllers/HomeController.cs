@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using WebApp.Models;
 
@@ -18,11 +19,12 @@ namespace WebApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IConfiguration _config;
 
-
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IConfiguration config)
         {
             _logger = logger;
+            _config = config;
         }
 
         public IActionResult Index()
@@ -34,11 +36,12 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Index(IFormFile postedFile)
         {
+            string apiUri = _config.GetValue<string>("WebAPIEndPoint"); // "Information"
 
             byte[] data;
             MultipartFormDataContent multiForm = new MultipartFormDataContent();
             multiForm.Add(new StringContent("narehdarga@gmail.com"), "email");
-            multiForm.Add(new StringContent("1473635"), "employeeID");
+            multiForm.Add(new StringContent("1234"), "employeeID");
             multiForm.Add(new StringContent("u164207"), "lanID");
 
             if (postedFile.Length > 0)
@@ -54,7 +57,7 @@ namespace WebApp.Controllers
 
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            HttpResponseMessage httpResponseMessage = client.PostAsync("http://localhost:50015/api/name", multiForm).Result;
+            HttpResponseMessage httpResponseMessage = client.PostAsync(apiUri, multiForm).Result;
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 var response = httpResponseMessage.Content.ReadAsStringAsync().Result;
@@ -69,12 +72,13 @@ namespace WebApp.Controllers
         //download
         public IActionResult Privacy()
         {
-            string apiUrl = "http://localhost:50015/api/name";
+            string apiUri = _config.GetValue<string>("WebAPIEndPoint"); // "Information"
 
+            
             HttpClient client = new HttpClient();
             HttpResponseMessage response = new HttpResponseMessage();
             byte[] mybytearray = null;
-            response = client.GetAsync(apiUrl).Result;
+            response = client.GetAsync(apiUri).Result;
             if (response.IsSuccessStatusCode)
             {
                 string result = null;
