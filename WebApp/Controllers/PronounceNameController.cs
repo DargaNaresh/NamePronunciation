@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using WebApp.ActionFilters;
 using WebApp.Models;
+using WebApp.Utility;
 
 namespace WebApp.Controllers
 {
@@ -14,7 +15,7 @@ namespace WebApp.Controllers
         [ServiceFilter(typeof(ValidateLoginFilterAttribute))]
         public IActionResult Index()
         {
-            List<User> lstSUM = GetUsers();
+            List<User> lstSUM = UserData.GetUsers();
             ViewBag.Users = lstSUM;
             return View();
         }
@@ -22,7 +23,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public ActionResult SearchUser(string searchParam)
         {
-            List<User> lstSUM= GetUsers();
+            List<User> lstSUM= UserData.GetUsers();
             if (string.IsNullOrEmpty(searchParam))
                 return PartialView(lstSUM);
             else
@@ -31,31 +32,6 @@ namespace WebApp.Controllers
         }     
 
 
-        private List<User> GetUsers()
-        {
-            List<User> lstSUM = new List<User>();
-            User sm = new User();
-            sm.LoginName = "Srikanth";
-            sm.EmployeeNumber = 1234;
-            sm.Email = "srikanth@test.com";
-            sm.LanId = "u567157";
-            lstSUM.Add(sm);
-
-            sm = new User();
-            sm.LoginName = "Naresh";
-            sm.EmployeeNumber = 1235;
-            sm.Email = "naresh@test.com";
-            sm.LanId = "u123459";
-            lstSUM.Add(sm);
-
-            sm = new User();
-            sm.LoginName = "Sailaja";
-            sm.EmployeeNumber = 1236;
-            sm.Email = "sailaja@test.com";
-            sm.LanId = "u123456";
-            lstSUM.Add(sm);
-
-            return lstSUM;
-        }
+       
     }
 }

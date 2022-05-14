@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.Models;
+using WebApp.Utility;
 
 namespace WebApp.Controllers
 {
@@ -13,7 +14,9 @@ namespace WebApp.Controllers
         // GET: UserController
         public ActionResult Index()
         {
-            return View();
+            List<User> lstSUM = UserData.GetUsers();
+            ViewBag.Users = lstSUM;
+            return View(lstSUM);           
         }
 
         // GET: UserController/Details/5
