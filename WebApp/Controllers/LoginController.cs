@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,24 +12,31 @@ namespace WebApp.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            if (HttpContext.Session.GetString("EmpID") != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return View();
+            }
         }
 
         [HttpPost]
-        public ActionResult Index(UserModel model)
+        public ActionResult Index(LoginUserModel model)
         {
-            Users oUser = new Users();
+            LoginUsers oUser = new LoginUsers();
             var item = oUser.CheckUser(model.UserName, model.Password);
             
-            if (item != null && item.Count<UserModel>() > 0)
+            if (item != null)
             {
-                //return View("PronounceName");
-                //RedirectToAction("Index", "PronounceName",);
-                return RedirectToActionPermanent("Index", "PronounceName");
+                HttpContext.Session.SetString("UserName", item.UserName);
+                HttpContext.Session.SetString("EmpID", item.EmpID.ToString());
+                return RedirectToAction("Index", "Home");
             }
             else if (item == null)
             {
-                ViewBag.NotValidUser = item;
+                ViewBag.NotValidUser = "User Name and Password mismatch";
             }
             else
             {
@@ -37,5 +45,17 @@ namespace WebApp.Controllers
 
             return View("Index");
         }
+        public  IActionResult Logout()
+        {
+            HttpContext.Session.Remove("UserName");
+            HttpContext.Session.Remove("EmpID");
+            return RedirectToAction("Index", "Home");
+        }
+        public IActionResult Denied()
+        {
+            return Content("Access Denied");
+        }
+
+
     }
 }

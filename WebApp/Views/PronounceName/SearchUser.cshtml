@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApp.Models.SearchUserModel>
+﻿@model IEnumerable<WebApp.Models.User>
     <script>
         $(document).ready(function () {
 
@@ -15,10 +15,10 @@
                     @Html.DisplayNameFor(model => model.LanId)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.EmpNum)
+                    @Html.DisplayNameFor(model => model.EmployeeNumber)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.FirstName)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.Email)
@@ -36,17 +36,17 @@
                         @Html.DisplayFor(modelItem => item.LanId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.EmpNum)
+                        @Html.DisplayFor(modelItem => item.EmployeeNumber)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Name)
+                        @Html.DisplayFor(modelItem => item.FirstName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Email)
                     </td>
                     <td>
-                        <div id="divDownloadAudio" class="@item.EmpNum">
-                           <input type="button" onclick="getAudio(@item.EmpNum)" value="Get Recording" class="btn btn-primary" />
+                        <div id="divDownloadAudio" class="@item.EmployeeNumber">
+                           <input type="button" onclick="getAudio(@item.EmployeeNumber)" value="Get Recording" class="btn btn-primary" />
                         </div>
                     </td>                   
                 </tr>
