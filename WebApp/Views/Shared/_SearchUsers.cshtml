@@ -1,23 +1,29 @@
-﻿@model IEnumerable<WebApp.Models.Users>
+﻿@model WebApp.Models.SearchUserModelList
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<table id="tblGrid" style="border: 1px solid #999" cellpadding="1" cellspacing="0" class="table">
     <thead>
         <tr>
-            <th></th>
+            <th>Name</th>
+            <th>LanId</th>
+            <th>Employee Number</th>
+            <th>Email</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        @if (@Model != null)
+        {
+            @foreach (var data in @Model.SearchUserData)
+            {
+                <tr>
+                    <td>@data.Name </td>
+                    <td>@data.LanId </td>
+                    <td>@data.EmpNum </td>
+                    <td>@data.Email </td>
+                </tr>
+            }
+        }
+
     </tbody>
 </table>
+
+

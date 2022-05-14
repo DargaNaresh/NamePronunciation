@@ -12,19 +12,23 @@ namespace WebApp.Controllers
         public IActionResult Index()
         {
 
-            SearchUserModelList lst = new SearchUserModelList();
-            lst.SearchUserData = GetUsers();
-            return View(lst);
+            //SearchUserModelList lst = new SearchUserModelList();
+            //lst.SearchUserData = GetUsers();
+            return View();
         }
 
         [HttpPost]
         public IActionResult SearchUser([FromBody] string qry)
         {
-            SearchUserModelList lst = new SearchUserModelList();
+            SearchUserModelList lst = new SearchUserModelList();         
             List<SearchUserModel> lstSUM= GetUsers();
-            lst.SearchUserData = lstSUM.Where(a => a.Name.Contains(qry) || a.LanId.Contains(qry) || a.Email.Contains(qry) || a.EmpNum.Contains(qry)).ToList();
+
+            if (string.IsNullOrEmpty(qry))
+                lst.SearchUserData = lstSUM;
+            else
+                lst.SearchUserData = lstSUM.Where(a => a.Name.Contains(qry) || a.LanId.Contains(qry) || a.Email.Contains(qry) || a.EmpNum.Contains(qry)).ToList();
             
-            return View(lst);
+            return PartialView(@"~/Views/Shared/_SearchUsers.cshtml", lst);
         }
 
         public List<SearchUserModel> GetUsers()
