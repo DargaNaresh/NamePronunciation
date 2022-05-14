@@ -22,11 +22,12 @@ namespace WebAPI.Controllers
 
         }
         public static byte[] content;
+        public static byte[] content1;
         public static string userlanID;
 
 
         [HttpPost, DisableRequestSizeLimit]
-        public ActionResult Upload(IFormFile audio, [FromForm] string email,[FromForm] string lanID, [FromForm] string employeeID)
+        public ActionResult Upload(IFormFile audio, [FromForm] string email, [FromForm] string lanID, [FromForm] string employeeID)
         {
             //web app will record the mp3 and will send the mp3 to this api
             if (ModelState.IsValid)
@@ -35,7 +36,11 @@ namespace WebAPI.Controllers
                 if (audio != null && audio.Length > 0)
                 {
                     var reader = new System.IO.BinaryReader(audio.OpenReadStream());
-                    content = reader.ReadBytes(Convert.ToInt32(audio.Length));
+                   //for testing : naresh
+                    if (employeeID == "1234")
+                        content = reader.ReadBytes(Convert.ToInt32(audio.Length));
+                    else
+                        content1 = reader.ReadBytes(Convert.ToInt32(audio.Length));
 
                 }
                 return Ok("uploaded successful"); ;
@@ -84,9 +89,9 @@ namespace WebAPI.Controllers
         //}
 
         [HttpGet, DisableRequestSizeLimit]
-        public byte[] Download()
+        public byte[] Download(int empID)
         {
-            byte[] mybytearray = content;
+            byte[] mybytearray = empID==1234? content:content1;
             return mybytearray;
         }
 

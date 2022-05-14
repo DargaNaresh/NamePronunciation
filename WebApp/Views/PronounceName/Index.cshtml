@@ -15,110 +15,49 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body>   
+    <br />
+    <br />
 
-    @*@if (@Model != null)
-    {*@
-        <br />
-        <br />
+    <table id="tblGrid" style="border:2px solid gray;" class="table">        
+        <tr>
+            <td colspan="4" align="right">
+                <input type="text" id="txtSearch" />&nbsp;              
+                <input type="button" id="btnSearch" value="Search" class="btn btn-primary" /> 
+            </td>
+        </tr>        
+        <tr>
+            <td colspan="4">
+                <div id="divSearch">
+                    @Html.Partial("SearchUser", (List<SearchUserModel>)ViewBag.Users)                    
+                </div>
+            </td>
+        </tr>
+    </table>   
 
-        <table id="tblGrid" style="border:2px solid gray;"  class="table">
-            
-                <tr>
-                    <td colspan="4">
-                        <span id="msg"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="3" align="right">
-                        <input type="text" id="txtSearch" />
-                    </td>
-                    <td>
-                        <input type="button" id="btnSearch" value="Search" class="btn btn-primary"  /> @*onclick='SearchUser(this)'*@
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4"></td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <div id="divSearch">
-                            @Html.Partial("~/Views/Shared/_SearchUsers.cshtml");
-                           @*@{ Html.RenderPartial("~/Views/Shared/_SearchUsers.cshtml"); }*@                       
-                        </div>
-                    </td>
-                </tr>
+    <script>
+        $(document).ready(function () {
+        });
 
-                        </table>
+        $('#btnSearch').click(function () {
+            SearchUser();
+        });
 
-                        @*}*@
+        $('#txtSearch').keypress(function (event) {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '13') {
+                SearchUser();
+            }
+        });
 
-                            <script>
-                                $(document).ready(function () {
-                                    SearchUser();
-                                });
+        function SearchUser() {
+            var element = this;
+            var query = $("#txtSearch").val();
+            $("#divSearch").load("/PronounceName/SearchUser?searchParam=" + query);
 
-                                //function SearchUserfunction() () {
-                                //    //var options = {};
-                                //    //options.url = "/PronounceName/SearchUser";
-                                //    //options.type = "POST";
-                                //    //console.dir($("#txtSearch").val());
-                                //    //options.data = JSON.stringify($("#txtSearch").val());
-                                //    //options.contentType = "application/json";
-                                //    //options.dataType = "html";
+        }
 
-                                //    //options.success = function (msg) {
-                                //    //   // $("#msg").html(msg);
-                                //    //},
-                                //    //    options.error = function () {
-                                //    //        $("#msg").html("Error while calling the Web API!");
-                                //    //    };
-                                //    //$.ajax(options);
-
-                                //    var url = "/PronounceName/SearchUser";
-                                //    var query = $("#txtSearch").val();
-                                //    $.post(url, { qry: query }, function (data) {
-                                //        // $("#msg").html(data);
-                                //    });
-                                //}
-
-                                $('#btnSearch').click(function () {                                    
-                                    SearchUser();
-                                });
-
-                                function SearchUser() {
-                                    var element = this;
-                                    var query = $("#txtSearch").val();
-                                    
-                                    $.ajax({
-                                        url: "/PronounceName/SearchUser",
-                                        type: "POST",
-                                        data: JSON.stringify(query),
-                                        dataType: "html",
-                                        //traditional: true,
-                                        contentType: "application/json; charset=utf-8",
-
-                                        success: function (response) {
-                                            if (response != null) {
-                                                //alert(JSON.stringify(response));
-                                                //$("#divSearch").html(response)
-                                            } else {
-                                                alert("Something went wrong");
-                                            }
-                                        },
-                                        failure: function (response) {
-                                            //alert(response.responseText);
-                                            alert('Failed!');
-                                        },
-                                        error: function (response) {
-                                            alert('Error!');
-                                        }
-                                    });
-
-                                    
-                                }
-
-                            </script>
+    </script>
 
 </body>
 </html>   

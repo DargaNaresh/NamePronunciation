@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using WebApp.Models;
 
@@ -11,27 +12,24 @@ namespace WebApp.Controllers
     {
         public IActionResult Index()
         {
-
-            //SearchUserModelList lst = new SearchUserModelList();
-            //lst.SearchUserData = GetUsers();
+            List<SearchUserModel> lstSUM = GetUsers();
+            ViewBag.Users = lstSUM;
             return View();
         }
 
-        [HttpPost]
-        public IActionResult SearchUser([FromBody] string qry)
+        [HttpGet]
+        public ActionResult SearchUser(string searchParam)
         {
-            SearchUserModelList lst = new SearchUserModelList();         
             List<SearchUserModel> lstSUM= GetUsers();
-
-            if (string.IsNullOrEmpty(qry))
-                lst.SearchUserData = lstSUM;
+            if (string.IsNullOrEmpty(searchParam))
+                return PartialView(lstSUM);
             else
-                lst.SearchUserData = lstSUM.Where(a => a.Name.Contains(qry) || a.LanId.Contains(qry) || a.Email.Contains(qry) || a.EmpNum.Contains(qry)).ToList();
+            return PartialView(lstSUM.Where(a => a.Name.Contains(searchParam) || a.LanId.Contains(searchParam) || a.Email.Contains(searchParam) || a.EmpNum.Contains(searchParam)).ToList());
             
-            return PartialView(@"~/Views/Shared/_SearchUsers.cshtml", lst);
-        }
+        }     
 
-        public List<SearchUserModel> GetUsers()
+
+        private List<SearchUserModel> GetUsers()
         {
             List<SearchUserModel> lstSUM = new List<SearchUserModel>();
             SearchUserModel sm = new SearchUserModel();
@@ -45,12 +43,12 @@ namespace WebApp.Controllers
             sm.Name = "Naresh";
             sm.EmpNum = "1235";
             sm.Email = "naresh@test.com";
-            sm.LanId = "u123456";
+            sm.LanId = "u123459";
             lstSUM.Add(sm);
 
             sm = new SearchUserModel();
             sm.Name = "Sailaja";
-            sm.EmpNum = "1235";
+            sm.EmpNum = "1236";
             sm.Email = "sailaja@test.com";
             sm.LanId = "u123456";
             lstSUM.Add(sm);
