@@ -25,13 +25,14 @@ namespace WebApp.Controllers
         [HttpPost]
         public ActionResult Index(LoginUserModel model)
         {
-            LoginUsers oUser = new LoginUsers();
-            var item = oUser.CheckUser(model.UserName, model.Password);
+             
+            User item = LoginUsers.CheckUser(model.UserName, model.Password);
             
             if (item != null)
             {
-                HttpContext.Session.SetString("UserName", item.UserName);
-                HttpContext.Session.SetString("EmpID", item.EmpID.ToString());
+                HttpContext.Session.SetString("UserName", item.FirstName);
+                HttpContext.Session.SetString("EmpID", item.EmployeeNumber.ToString());
+                HttpContext.Session.SetString("EmpType", item.Type.ToString());
                 return RedirectToAction("Index", "Home");
             }
             else if (item == null)

@@ -8,33 +8,21 @@ namespace WebApp.Models
 {
     public class LoginUserModel
     {
-        [Required(ErrorMessage = "UserName is required")]
+        [Required(ErrorMessage = "Email is required")]
+        [Display(Name ="Email")]
         public string UserName { get; set; }
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        public string EmpType { get; set; }
-
-        public int EmpID { get; set; }
     }
 
     public class LoginUsers
-    {
-        List<LoginUserModel> lstUsers = new List<LoginUserModel>();
-
-        public List<LoginUserModel> GetUsersList()
+    {          
+        public static User CheckUser(string Name, string pwd)
         {
-            lstUsers.Add(new LoginUserModel() { UserName = "admin", Password = "admin", EmpType="admin",EmpID=1235 });
-            lstUsers.Add(new LoginUserModel() { UserName = "srikanth", Password = "srikanth", EmpType="emp", EmpID = 1234 });
-            lstUsers.Add(new LoginUserModel() { UserName = "sailaja", Password = "sailaja", EmpType = "emp", EmpID = 1236 });
-            return lstUsers;
-        }
-
-        public LoginUserModel CheckUser(string Name, string pwd)
-        {
-           List<LoginUserModel> lst =  GetUsersList();
-           return lst.FirstOrDefault(a => a.UserName == Name && a.Password == pwd);
+            List<User> lst = Utility.UserData.GetUsers();
+           return lst.FirstOrDefault(a => a.Email == Name && a.Password == pwd);
         }
     }
 }

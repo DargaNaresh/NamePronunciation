@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using WebApp.Utility;
 
 namespace WebApp.Controllers
 {
@@ -19,23 +20,13 @@ namespace WebApp.Controllers
             _config = config;
         }
         [HttpGet]
-        public IActionResult Index(string empnum)
+        public IActionResult Index(int empnum)
         {
-            string apiUri = _config.GetValue<string>("WebAPIEndPoint"); // "Information"
-            apiUri += "?empID="+empnum;
-
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = new HttpResponseMessage();
-            byte[] mybytearray = null;
-            response = client.GetAsync(apiUri).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                string result = null;
-                result = response.Content.ReadAsStringAsync().Result.Replace("\"", string.Empty);
-                mybytearray = Convert.FromBase64String(result);
-            }
+            byte[] mybytearray = AudioHelper.GetAudioBytesByEmployeeId(empnum, _config.GetValue<string>("WebAPIEndPoint"));
             ViewBag.AudioData = "data:audio/wav;base64," + Convert.ToBase64String(mybytearray);
             return PartialView();
         }
+
+    
     }
 }

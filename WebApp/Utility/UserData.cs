@@ -12,24 +12,38 @@ namespace WebApp.Utility
         {
             List<User> lstSUM = new List<User>();
             User sm = new User();
-            sm.LoginName = "Srikanth";
+            sm.FirstName = "Srikanth";
+            sm.LastName = "Chinni";
             sm.EmployeeNumber = 1234;
             sm.Email = "srikanth@test.com";
-            sm.LanId = "u567157";
+            sm.Password = "admin";
+            sm.Type = EmployeeType.FullTime;
             lstSUM.Add(sm);
 
             sm = new User();
-            sm.LoginName = "Naresh";
+            sm.FirstName = "CCS";
+            sm.LastName = "Admin";
+            sm.EmployeeNumber = 12359;
+            sm.Email = "admin@test.com";
+            sm.Password = "admin";
+            sm.Type = EmployeeType.Admin;
+            lstSUM.Add(sm);
+
+            sm = new User();
+            sm.FirstName = "Naresh";
+            sm.LastName = "Darga";
             sm.EmployeeNumber = 1235;
             sm.Email = "naresh@test.com";
-            sm.LanId = "u123459";
+            sm.Password = "admin";
+            sm.Type = EmployeeType.FullTime;
             lstSUM.Add(sm);
 
             sm = new User();
-            sm.LoginName = "Sailaja";
+            sm.FirstName = "Sailaja";
+            sm.LastName = "Lakshmi";
             sm.EmployeeNumber = 1236;
             sm.Email = "sailaja@test.com";
-            sm.LanId = "u123456";
+            sm.Type = EmployeeType.FullTime;
             lstSUM.Add(sm);
 
             return lstSUM;

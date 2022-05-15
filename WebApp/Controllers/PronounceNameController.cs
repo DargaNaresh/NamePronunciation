@@ -27,7 +27,7 @@ namespace WebApp.Controllers
             if (string.IsNullOrEmpty(searchParam))
                 return PartialView(lstSUM);
             else
-            return PartialView(lstSUM.Where(a => a.LoginName.Contains(searchParam) || a.LanId.Contains(searchParam) || a.Email.Contains(searchParam) || a.EmployeeNumber.ToString().Contains(searchParam)).ToList());
+            return PartialView(lstSUM.Where(a => a.FirstName.Contains(searchParam)|| a.LastName.Contains(searchParam) || a.Email.Contains(searchParam) || a.EmployeeNumber.ToString().Contains(searchParam)).ToList());
             
         }     
 
