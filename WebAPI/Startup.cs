@@ -27,7 +27,7 @@ namespace WebAPI
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CCSIND Name Pronounce", Version = "v1" ,Description ="Developed by CCIND team"});
             });
 
             services.AddControllers();
@@ -46,6 +46,7 @@ namespace WebAPI
             app.UseSwaggerUI(c =>
             {
                 c.DocumentTitle = "CCSIND Name Pronounce";
+                c.RoutePrefix = "";
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
