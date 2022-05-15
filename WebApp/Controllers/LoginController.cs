@@ -50,6 +50,7 @@ namespace WebApp.Controllers
         {
             HttpContext.Session.Remove("UserName");
             HttpContext.Session.Remove("EmpID");
+            HttpContext.Session.Remove("EmpType");
             return RedirectToAction("Index", "Home");
         }
         public IActionResult Denied()
