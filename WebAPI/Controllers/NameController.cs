@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Speech.Synthesis;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.CognitiveServices.Speech;
+using Microsoft.CognitiveServices.Speech.Audio;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
 {
@@ -16,13 +14,19 @@ namespace WebAPI.Controllers
     [ApiController]
     public class NameController : ControllerBase
     {
-
-        public NameController()
-        {
-
-        }
         public static byte[] content;
-        
+        private const string Key = ".............";
+        private const string Location = "eastus"; // Azure Speech Service Location
+
+        private IHostingEnvironment Environment;
+
+        public NameController(IHostingEnvironment _environment)
+        {
+            Environment = _environment;
+        }
+
+
+
         /// <summary>
         /// Upload recorded Audio file for employee. This services converts the file into bytes and stores on database for respective employee
         /// </summary>
@@ -59,9 +63,85 @@ namespace WebAPI.Controllers
         [Route("TextToSpeech")]
         public ActionResult Upload([FromForm] string text)
         {
-            SpeechSynthesizer speech = new SpeechSynthesizer();
-            speech.Speak(text);
-            return Ok("successful");
+            var result = TextToBytesAsync(text);
+            return Ok(result.Result);
+        }
+
+       
+        private async Task<byte[]> TextToBytesAsync(string audioText)
+        {
+            try
+            {
+                byte[] buffer = new byte[160000000];
+                var config = SpeechConfig.FromSubscription(Key, Location);
+                config.SpeechSynthesisVoiceName = "en-US-AriaNeural";
+                config.SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat.Raw8Khz16BitMonoPcm);
+                // Creates a speech synthesizer using the default speaker as audio output.
+                using (var synthesizer = new SpeechSynthesizer(config, null))
+                {
+                    while (true)
+                    {
+                        using (SpeechSynthesisResult result = await synthesizer.SpeakSsmlAsync(audioText))
+                        {
+                            if (result.Reason == ResultReason.SynthesizingAudioCompleted)
+                            {
+                                string folderName = Environment.ContentRootPath + @"\audiofiles";
+                                // If directory does not exist, create it
+                                if (!Directory.Exists(folderName))
+                                {
+                                    Directory.CreateDirectory(folderName);
+                                }
+
+                                AudioDataStream stream = AudioDataStream.FromResult(result);  // to return in Memory
+                                await stream.SaveToWaveFileAsync(folderName + @"//" + DateTime.Now.Hour.ToString() + "_" + DateTime.Now.Minute.ToString() + ".wav");
+
+                                //_logger.LogInformation("AzureSynthesisController_AzureSynthesisToBytesAsync", new Dictionary<string, string> { { "Id", Id }, { "ResultReasonMessage", "SynthesizingAudioCompleted" }, { "OriginalText", audioText } });
+
+
+                                var buffer2 = result.AudioData;
+                                Stream stream2 = new MemoryStream(buffer2);
+                                return buffer2;
+
+                                //return result.AudioData;
+                            }
+
+                        }
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private static async Task Conversion(string text,
+        SpeechSynthesizer synthesizer)
+        {
+            using (var r = await synthesizer.SpeakTextAsync(text))
+            {
+                if (r.Reason == ResultReason.SynthesizingAudioCompleted)
+                    Console.WriteLine($"Speech converted " +
+                    $"to speaker for text [{text}]");
+                else if (r.Reason == ResultReason.Canceled)
+                {
+                    var cancellation =
+                    SpeechSynthesisCancellationDetails.FromResult(r);
+                    Console.WriteLine($"CANCELED: " +
+                    $"Reason={cancellation.Reason}");
+                    if (cancellation.Reason == CancellationReason.Error)
+                    {
+                        Console.WriteLine($"Cancelled with " +
+                        $"Error Code {cancellation.ErrorCode}");
+                        Console.WriteLine($"Cancelled with " +
+                        $"Error Details " +
+                        $"[{cancellation.ErrorDetails}]");
+                    }
+                }
+            }
+
         }
 
 
@@ -71,7 +151,7 @@ namespace WebAPI.Controllers
         /// <param name="empID">Employee tagged to Audio File</param>
         /// <returns></returns>
         [HttpGet, DisableRequestSizeLimit]
-       [Route("DownloadFile")]
+        [Route("DownloadFile")]
         public ActionResult DownloadFile(int empID)
         {
             //await
